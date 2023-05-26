@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to E-Learning</title>
+    <style>
+        body {
+            background-color: #F5F5F5;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        .wrapper {
+            min-height: 100%;
+            position: relative;
+        }
+
+        header {
+            /* add some padding to make room for the fixed navigation */
+            padding-top: 50px;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+            <h1>Welcome to E-Learning</h1>
+        </header>
+        <main>
+            <p>Hello,</p>
+            <p>Thank you for visiting E-Learning.</p>
+        </main>
+        <footer>
+            <p>&copy; 2023 E-Learning</p>
+        </footer>
+    </div>
+</body>
+
+</html>
