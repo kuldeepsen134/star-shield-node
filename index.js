@@ -20,7 +20,7 @@ app.use(cookieParser())
 
 app.use(
   cors({
-    origin: '*',
+    origin: ['https://star-shield.netlify.app', 'http://localhost:3000'],
     credentials: true,
   })
 )

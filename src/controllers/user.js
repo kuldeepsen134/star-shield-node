@@ -1,9 +1,8 @@
 const { User } = require("../models")
 const md5 = require("md5")
-const jwt = require('jsonwebtoken')
-const { handleError, handleResponse } = require("../utils/helpers")
+const { handleError, handleResponse, createUUID } = require("../utils/helpers")
 const { registerUser } = require("../utils/common")
-const jwtkey = "jwt"
+const { sendMailer } = require("../utils/helpers")
 
 
 exports.register = async (req, res) => {
@@ -24,6 +23,9 @@ exports.register = async (req, res) => {
       email: email.toLowerCase(),
       password: md5(password),
       role,
+      isEmailVerified: false,
+
+      token: createUUID()
     })
 
     const newUser = new User(data)
@@ -32,9 +34,24 @@ exports.register = async (req, res) => {
 
     const datad = { ...newUser._doc, error: false }
 
-    const token = await jwt.sign(datad, process.env.JWT_SECRET, { expiresIn: `${process.env.JWT_EXPIRE_ACCESS}` })
-  
-    res.cookie('token', token)
+    const link = `${process.env.FRONTEND_URL}/email-verify?token=${datad.token}`;
+    const subject = "Your email verification link";
+    const message = `<div style="margin:auto; width:70%">
+                            <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+                            <div style="margin:50px auto;width:60%;padding:20px 0">
+                            <div style="border-bottom:1px solid #eee">
+                                <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Star Shield</a>
+                            </div>
+                              <p style="font-size:25px">Hello  ,</p>
+                              <p>Use the code below to recover access to your Star Shield account.</p>
+                              <a href=${link} style=text-decoration:none><h3 stylea="background:#e6f3ffwidth:fullmargin: 0 autopadding:10px">Confirm</h3></a></h3>
+                              <p style="font-size:0.9em;">Best Regards,<br />Star Shield</p>
+                          </div>
+                      </div>
+                      </div>`;
+
+    sendMailer(data.email, subject, message, res)
+
 
     res.send(datad)
 

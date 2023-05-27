@@ -19,6 +19,8 @@ const userSchema = Schema({
     type: String,
     enum: ['student', 'faculty'],
   },
+
+  isEmailVerified: Boolean,
   token: {
     type: String,
 

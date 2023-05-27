@@ -3,6 +3,115 @@ const { User } = require("../models")
 const { login, resetEmail } = require("../utils/common")
 const jwt = require('jsonwebtoken')
 const { handleError, sendMailer, handleResponse, createUUID } = require("../utils/helpers")
+
+
+
+
+
+
+exports.emailVerify = async (req, res) => {
+    const { error } = emailVerify.validate(req.query,)
+    if (error) {
+        handleError(error, req, res)
+        return
+    }
+    const user = await User.findOne({ token: req.query.token, })
+
+    if (user) {
+
+        User.updateOne({ _id: user.id }, { token: null, isEmailVerified: true }, {
+            new: true
+        })
+            .then(data => {
+
+                const getUser = User.findOne({ email: user.email })
+                    .then(user => {
+                        const userSubject = 'Thank you for email verified'
+                        const userMessage = `
+                                <div style="margin:auto; width:70%">
+                                        <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+                                            <div style="margin:50px auto;width:60%;padding:20px 0">
+                                            <div style="border-bottom:1px solid #eee; width: max-content">
+                                            <a href="https://www.technoskd.com/" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Your Archive</a>
+                                        </div>
+                                        <p style="font-size:25px">Hello ${user.first_name},</p>
+                                        <p>Your Email is successfully verified.</p>
+                                        <h3 style="background:#e6f3ff;width:full;margin: 0 auto;padding:10px;">Thank You!</h3>
+                                        <p style="font-size:0.9em;">Best Regards,<br />Your Archive</p>
+                                    </div>
+                                    </div>
+                                </div>`
+
+                        sendMailer(`${user.email}`, user.first_name, 'Star Shield', userSubject, userMessage)
+                    }).catch(err => {
+                        handleError(err, req, res)
+                    })
+                handleResponse(res, undefined, message.EmailVerified)
+            })
+            .catch(err => {
+                handleError(err, req, res)
+            })
+    }
+    else {
+        handleError(message.LinkAllReadyUsed, req, res)
+    }
+}
+
+exports.resend = async (req, res) => {
+
+    const { error } = resendEmail.validate(req.body, { abortEarly: false });
+    if (error) {
+        handleError(error, req, res)
+        return
+    }
+
+    const user = await User.findOne({ where: { email: req.body.email } })
+    if (user === null) {
+        return handleError(message.PleaseInputRegisterEmail, req, res)
+    }
+    else
+        if (user?.status == 'email_verify') {
+
+            return handleError(message.YourEmailisAlreadyVerified, req, res)
+        }
+        else
+            if (user?.status == 'pending') {
+                User.update({
+                    token: createUUID()
+                }, { where: { id: user.id } })
+                    .then(async (data) => {
+
+                        const user = await User.findOne({ where: { email: req.body.email } })
+
+                        const link = `${process.env.BACKEND_URL}/email-verify?token=${user.token}`;
+                        const subject = "Your email verification link";
+                        const messages = `<div style="margin:auto; padding:10%">
+                                    <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+                                    <div style="margin:50px auto;width:60%;padding:20px 0">
+                                    <div style="border-bottom:1px solid #eee">
+                                        <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Your Archive</a>
+                                    </div>
+                                    <p style="font-size:25px">Hello  ,</p>
+                                    <p>Use the code below to recover access to your Your Archive account.</p>
+                                    <a href=${link} style=text-decoration:none><h3 style="background:#e6f3ffwidth:fullmargin: 0 autopadding:10px">Confirm</h3></a></h3>
+                                    <p style="font-size:0.9em;">Best Regards,<br />Your Archive</p>
+                                    </div>
+                                </div>
+                                </div>`;
+
+                        sendMailer(user.email, user.first_name, subject, messages);
+
+                        getResponse(res, message.LinkHasbeenSend)
+                    })
+                    .catch(err => {
+                        handleError(err, req, res)
+                    })
+            }
+};
+
+
+
+
 // Login User
 
 exports.login = async (req, res,) => {
@@ -16,25 +125,30 @@ exports.login = async (req, res,) => {
     }
 
     const user = await User.findOne({ email: email, password: md5(password) })
-
     if (user === null) {
         res.status(400).send({ message: 'Invalid login credential', error: true })
         return
     }
-    else {
-        const token = await jwt.sign({
-            _id: user._id,
-            email: user.email,
-            first_name: user.first_name,
-            last_name: user.last_name
-        }, process.env.JWT_SECRET, { expiresIn: `${process.env.JWT_EXPIRE_ACCESS}` })
+    else
+        if (user.isEmailVerified === false) {
+            res.status(400).send({ message: 'Before login you need verify your account', error: true })
+            return
+        }
 
-        res.cookie('token', token).send({
-            token: token,
-            message: 'LoggedIn Successfully',
-            error: false
-        })
-    }
+        else {
+            const token = await jwt.sign({
+                _id: user._id,
+                email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name
+            }, process.env.JWT_SECRET, { expiresIn: `${process.env.JWT_EXPIRE_ACCESS}` })
+
+            res.cookie('token', token).send({
+                token: token,
+                message: 'LoggedIn Successfully',
+                error: false
+            })
+        }
 
 }
 
@@ -129,7 +243,7 @@ exports.forgotPasswordVerify = async (req, res) => {
 }
 
 exports.me = async (req, res) => {
-    const user = await User.findOne({ _id: req.user._id })
+    const user = await User.findOne({ _id: req.user.id })
     user === null ? handleError('Unauthorized user', 400, res) : handleResponse(res, user._doc, 200)
 
 }
