@@ -32,7 +32,7 @@ exports.register = async (req, res) => {
 
     const token = await jwt.sign({ data }, jwtkey, { expiresIn: '2592000s' })
 
-    const datad = { ...newUser._doc, token }
+    const datad = { ...newUser._doc, token,message:'User create sucessfully' }
 
     handleResponse(res, datad, 201)
 

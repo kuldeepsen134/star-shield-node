@@ -78,12 +78,18 @@ exports.forgotPassword = async (req, res) => {
                                         <div style="margin:50px autowidth:60%padding:20px 0">
                                         <p style="font-size:25px">Hello,</p>
 
-                                        <p>Use the code below to recover access to your Human relief account.</p>
-                                                <div style="border-bottom:1px solid #eee"> OTP = ${token}</div>
+                                        <p>Use the code below to recover access to your Start Shield account.</p>
+                                               
+
+
+                                                <div style="border-bottom:1px solid #eee">
+                                                <a href=${process.env.FRONTEND_URL}/account-recovery/submit/?token=${token} style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Click the link and reset your password</a>
+                                              </div>
+                                          
 
                                         <p>The recovery code is only valid for 24 hours after it’s generated. If your code has already expired, you can restart the recovery process and generate a new code.
                                         If you haven't initiated an account recovery or password reset in the last 24 hours, ignore this message.</p>
-                                        <p style="font-size:0.9em">Best Regards,<br />HUMAN RELIEF</p>
+                                        <p style="font-size:0.9em">Best Regards,<br />STAR SHIELD</p>
                                         </div>
                                         </div>
                                         </div>`
@@ -104,7 +110,7 @@ exports.forgotPasswordVerify = async (req, res) => {
     const user = await User.findOne({ token: req.body.token })
 
     if (user === null) {
-        return res.send({ message: 'This otp has already been used', error: true })
+        return res.status(409).send({ message: 'This link has already been used', error: true })
     }
 
     if (req.body.new_password === req.body.confirm_password) {
@@ -120,9 +126,7 @@ exports.forgotPasswordVerify = async (req, res) => {
     }
     else
         return res.send({ message: 'Password and confirm password should be same.', error: true })
-
 }
-
 
 exports.me = async (req, res) => {
     const user = await User.findOne({ _id: req.user.id })

@@ -1,11 +1,12 @@
 const nodemailer = require('nodemailer');
 
 const Sib = require('sib-api-v3-sdk');
+
 const client = Sib.ApiClient.instance;
 
 const { Option, Answer, Question } = require('../models');
 
-exports.handleResponse = (res, data, status = 200) => res.status(status).json({ data, error: false });
+exports.handleResponse = (res, data, status = 200) => res.status(status).json({ ...data, error: false });
 
 exports.handleError = (error, status = 400, res,) => {
     if (error.details) {
@@ -38,7 +39,7 @@ exports.sendMailer = async (email, subject, message, res) => {
     const data = {
         from: `${process.env.SMPT_EMAIL_FROM}`,
         to: `${email}`,
-        subject: `${subject} - E-learning`,
+        subject: `${subject} - Star Shield`,
         html: `${message}`,
     }
 
