@@ -18,10 +18,12 @@ app.use("/", express.static(path.join(__dirname, "/client/build")))
 app.use(express.json())
 app.use(cookieParser())
 
-app.use(cors({
-  origin: "http://localhost:3000",
-  credentials: true
-})) 
+app.use(
+  cors({
+    origin: '*',
+    credentials: true,
+  })
+)
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
