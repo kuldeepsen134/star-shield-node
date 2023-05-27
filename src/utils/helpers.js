@@ -6,7 +6,7 @@ const client = Sib.ApiClient.instance;
 
 const { Option, Answer, Question } = require('../models');
 
-exports.handleResponse = (res, data, status = 200) => res.status(status).json({ ...data, error: false });
+exports.handleResponse = (res, data, status = 200) => res.status(status).json({ data, error: false });
 
 exports.handleError = (error, status = 400, res,) => {
     if (error.details) {

@@ -9,6 +9,7 @@ exports.authJWT = async (req, res, next) => {
         return next()
 
     if (req.cookies.token) {
+        console.log(req.cookies.token);
         try {
             const data = await jwt.verify(req.cookies.token, process.env.JWT_SECRET)
             req.user = data;

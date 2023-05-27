@@ -12,10 +12,10 @@ exports.register = async (req, res) => {
     const { error } = registerUser.validate(req.body, { abortEarly: false })
 
     if (error) {
-      return handleError(error, 400, res)
+      return handleError(error, 400, res,)
     }
 
-    
+
     const { first_name, last_name, email, password, role, } = req.body
 
     let data = ({
@@ -30,11 +30,13 @@ exports.register = async (req, res) => {
 
     await newUser.save()
 
-    const token = await jwt.sign({ data }, jwtkey, { expiresIn: '2592000s' })
+    const datad = { ...newUser._doc, error: false }
 
-    const datad = { ...newUser._doc, token,message:'User create sucessfully' }
+    const token = await jwt.sign(datad, process.env.JWT_SECRET, { expiresIn: `${process.env.JWT_EXPIRE_ACCESS}` })
+  
+    res.cookie('token', token)
 
-    handleResponse(res, datad, 201)
+    res.send(datad)
 
   }
 
