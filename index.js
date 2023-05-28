@@ -3,20 +3,28 @@ const app = express()
 
 const cookieParser = require("cookie-parser")
 const cors = require("cors")
+
+const cookieSession = require('cookie-session')
+
 const bodyParser = require("body-parser")
 const path = require("path")
+
+const passport = require('passport')
+
 
 require("dotenv").config({ path: __dirname + '/.env' });
 
 const { authJWT } = require('./src/middleware/middleware')
 
-//setting view engine to ejs
-app.set("view engine", "ejs");
+require('./src/controllers/passport')
 
-app.use("/", express.static(path.join(__dirname, "/client/build")))
+app.set("view engine", "ejs");
 
 app.use(express.json())
 app.use(cookieParser())
+
+app.use("/", express.static(path.join(__dirname, "/client/build")))
+
 
 app.use(
   cors({
@@ -26,6 +34,15 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization'], // Add additional headers as required
   })
 )
+
+app.use(cookieSession({
+  name: 'google-auth-session',
+  keys: ['key1', 'key2']
+}))
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -42,7 +59,7 @@ require('./src/routes/comment')(app)
 
 //**********Quiz routes**********//
 require('./src/routes/reply')(app)
-
+require('./src/routes/googleAuth')(app)
 
 app.get('*', function (req, res) {
   res.status(404).send('Huhhh smart!')

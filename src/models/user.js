@@ -12,12 +12,15 @@ const userSchema = Schema({
     type: String,
     unique: true,
   },
+  googleId: {
+    type: String,
+  },
   password: {
     type: String,
   },
   role: {
     type: String,
-    enum: ['student', 'faculty'],
+    enum: ['user', 'admin'],
   },
 
   isEmailVerified: Boolean,

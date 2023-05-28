@@ -5,10 +5,6 @@ const jwt = require('jsonwebtoken')
 const { handleError, sendMailer, handleResponse, createUUID } = require("../utils/helpers")
 
 
-
-
-
-
 exports.emailVerify = async (req, res) => {
     const user = await User.findOne({ token: req.query.token, })
     if (user) {
@@ -17,7 +13,7 @@ exports.emailVerify = async (req, res) => {
             {
                 new: true
             })
-        return res.send({ message: 'Congratulation you email is verified successfully', error: false })
+        return res.send({ message: 'Congratulation your account is verified successfully', error: false })
     }
     else {
         handleError('Invailid verification link', 400, res)
@@ -28,54 +24,52 @@ exports.resend = async (req, res) => {
 
     const { error } = resendEmailLink.validate(req.body, { abortEarly: false });
     if (error) {
-        handleError(error, req, res)
+        handleError(error, 400, res)
         return
     }
 
     const user = await User.findOne({ where: { email: req.body.email } })
     if (user === null) {
-        return handleError(message.PleaseInputRegisterEmail, req, res)
+        return handleError('Please input registered email', 400, res)
     }
     else
-        if (user?.status == true) {
+        if (user?.isEmailVerified === true) {
 
-            return handleError(message.YourEmailisAlreadyVerified, req, res)
+            return handleError('Your account is already verified', 400, res)
         }
         else
-            if (user?.status == 'pending') {
-                User.update({
-                    token: createUUID()
-                }, { where: { id: user.id } })
+            if (user?.isEmailVerified === false) {
+                User.updateOne({ _id: user.id }, { token: createUUID() }, { new: true })
+
                     .then(async (data) => {
 
                         const user = await User.findOne({ where: { email: req.body.email } })
 
-                        const link = `${process.env.BACKEND_URL}/email-verify?token=${user.token}`;
+                        const link = `${process.env.BACKEND_URL}/account-verification?token=${user.token}`;
+
                         const subject = "Your email verification link";
-                        const messages = `<div style="margin:auto; padding:10%">
+                        const message = `<div style="margin:auto; width:70%">
                                     <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
                                     <div style="margin:50px auto;width:60%;padding:20px 0">
                                     <div style="border-bottom:1px solid #eee">
-                                        <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Your Archive</a>
+                                        <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Star Shield</a>
                                     </div>
-                                    <p style="font-size:25px">Hello  ,</p>
-                                    <p>Use the code below to recover access to your Your Archive account.</p>
-                                    <a href=${link} style=text-decoration:none><h3 style="background:#e6f3ffwidth:fullmargin: 0 autopadding:10px">Confirm</h3></a></h3>
-                                    <p style="font-size:0.9em;">Best Regards,<br />Your Archive</p>
+                                        <p style="font-size:25px">Hello  ,</p>
+                                        <p>Use the code below to recover access to your Star Shield account.</p>
+                                        <a href=${link} style=text-decoration:none><h3 stylea="background:#e6f3ffwidth:fullmargin: 0 autopadding:10px">Confirm</h3></a></h3>
+                                        <p style="font-size:0.9em;">Best Regards,<br />Star Shield</p>
                                     </div>
                                 </div>
                                 </div>`;
 
-                        sendMailer(user.email, user.first_name, subject, messages);
-
-                        getResponse(res, message.LinkHasbeenSend)
+                        sendMailer(user.email, subject, message, res)
+                        handleResponse(res, 'Resend verification link successfully', 200)
                     })
                     .catch(err => {
                         handleError(err, req, res)
                     })
             }
 };
-
 
 // Login User
 

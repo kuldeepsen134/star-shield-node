@@ -5,7 +5,7 @@ const path = require("path");
 
 exports.authJWT = async (req, res, next) => {
 
-    if (req.path.includes('/account-verification/resend') ||req.path.includes('/account-verification') ||req.path.includes('/login') || req.path.includes('/register') || req.path.includes('/forgotPassword') || req.path.includes('/reset-password-email') || req.path.includes('/update-password') || req.path.includes('/email-resend'))
+    if (req.path.includes('/google') || req.path.includes('/account-verification/resend') || req.path.includes('/account-verification') || req.path.includes('/login') || req.path.includes('/register') || req.path.includes('/forgotPassword') || req.path.includes('/reset-password-email') || req.path.includes('/update-password') || req.path.includes('/email-resend'))
         return next()
 
     if (req.cookies.token) {

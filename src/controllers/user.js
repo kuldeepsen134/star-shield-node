@@ -34,7 +34,7 @@ exports.register = async (req, res) => {
 
     const datad = { ...newUser._doc, error: false }
 
-    const link = `${process.env.FRONTEND_URL}/account-verification?token=${datad.token}`;
+    const link = `${process.env.BACKEND_URL}/account-verification?token=${datad.token}`;
     const subject = "Your email verification link";
     const message = `<div style="margin:auto; width:70%">
                             <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
