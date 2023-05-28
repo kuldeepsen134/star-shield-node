@@ -1,6 +1,6 @@
 const md5 = require("md5")
 const { User } = require("../models")
-const { login, resetEmail } = require("../utils/common")
+const { login, resetEmail, resendEmailLink } = require("../utils/common")
 const jwt = require('jsonwebtoken')
 const { handleError, sendMailer, handleResponse, createUUID } = require("../utils/helpers")
 
@@ -10,56 +10,23 @@ const { handleError, sendMailer, handleResponse, createUUID } = require("../util
 
 
 exports.emailVerify = async (req, res) => {
-    const { error } = emailVerify.validate(req.query,)
-    if (error) {
-        handleError(error, req, res)
-        return
-    }
     const user = await User.findOne({ token: req.query.token, })
-
     if (user) {
 
-        User.updateOne({ _id: user.id }, { token: null, isEmailVerified: true }, {
-            new: true
-        })
-            .then(data => {
-
-                const getUser = User.findOne({ email: user.email })
-                    .then(user => {
-                        const userSubject = 'Thank you for email verified'
-                        const userMessage = `
-                                <div style="margin:auto; width:70%">
-                                        <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
-                                            <div style="margin:50px auto;width:60%;padding:20px 0">
-                                            <div style="border-bottom:1px solid #eee; width: max-content">
-                                            <a href="https://www.technoskd.com/" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">Your Archive</a>
-                                        </div>
-                                        <p style="font-size:25px">Hello ${user.first_name},</p>
-                                        <p>Your Email is successfully verified.</p>
-                                        <h3 style="background:#e6f3ff;width:full;margin: 0 auto;padding:10px;">Thank You!</h3>
-                                        <p style="font-size:0.9em;">Best Regards,<br />Your Archive</p>
-                                    </div>
-                                    </div>
-                                </div>`
-
-                        sendMailer(`${user.email}`, user.first_name, 'Star Shield', userSubject, userMessage)
-                    }).catch(err => {
-                        handleError(err, req, res)
-                    })
-                handleResponse(res, undefined, message.EmailVerified)
+        await User.updateOne({ _id: user.id }, { token: null, isEmailVerified: true },
+            {
+                new: true
             })
-            .catch(err => {
-                handleError(err, req, res)
-            })
+        return res.send({ message: 'Congratulation you email is verified successfully', error: false })
     }
     else {
-        handleError(message.LinkAllReadyUsed, req, res)
+        handleError('Invailid verification link', 400, res)
     }
 }
 
 exports.resend = async (req, res) => {
 
-    const { error } = resendEmail.validate(req.body, { abortEarly: false });
+    const { error } = resendEmailLink.validate(req.body, { abortEarly: false });
     if (error) {
         handleError(error, req, res)
         return
@@ -70,7 +37,7 @@ exports.resend = async (req, res) => {
         return handleError(message.PleaseInputRegisterEmail, req, res)
     }
     else
-        if (user?.status == 'email_verify') {
+        if (user?.status == true) {
 
             return handleError(message.YourEmailisAlreadyVerified, req, res)
         }
@@ -108,8 +75,6 @@ exports.resend = async (req, res) => {
                     })
             }
 };
-
-
 
 
 // Login User

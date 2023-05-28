@@ -14,12 +14,16 @@ const login = Joi.object().keys({
 
 })
 
+
 const resetEmail = Joi.object().keys({
     email: Joi.string().email().required(),
 
 })
 
+const resendEmailLink = Joi.object().keys({
+    email: Joi.string().email().required(),
 
+})
 
 //**************** Comments ****************/
 const createComment = Joi.object().keys({
@@ -37,9 +41,11 @@ const createReply = Joi.object().keys({
 })
 
 
-
 module.exports = {
     registerUser,
+
+    resendEmailLink,
+
     login,
     resetEmail,
 

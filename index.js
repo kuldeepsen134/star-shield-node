@@ -44,10 +44,10 @@ require('./src/routes/comment')(app)
 require('./src/routes/reply')(app)
 
 
-
-app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "/views/index.html"))
+app.get('*', function (req, res) {
+  res.status(404).send('Huhhh smart!')
 })
+
 
 const PORT = process.env.PORT || 5200
 
