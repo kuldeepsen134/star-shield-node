@@ -2,9 +2,19 @@ const mongoose = require("mongoose")
 const { Schema } = mongoose
 
 const groupSchema = Schema({
-    member_Id: {
+    title: {
         type: String,
     },
+    description: {
+        type: String,
+    },
+    member_IDs: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Group'
+        }
+    ],
+
     admin_Id: {
         type: String,
     },

@@ -40,6 +40,11 @@ const createReply = Joi.object().keys({
     video_id: Joi.string().required(),
 })
 
+const createGroup = Joi.object().keys({
+    title: Joi.string().required(),
+    description: Joi.string().required(),
+    member_IDs: Joi.array()
+})
 
 module.exports = {
     registerUser,
@@ -51,5 +56,4 @@ module.exports = {
 
     createComment,
     createReply,
-
 }

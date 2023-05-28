@@ -59,7 +59,13 @@ require('./src/routes/comment')(app)
 
 //**********Quiz routes**********//
 require('./src/routes/reply')(app)
+
 require('./src/routes/googleAuth')(app)
+
+require('./src/routes/group')(app)
+
+
+
 
 app.get('*', function (req, res) {
   res.status(404).send('Huhhh smart!')
