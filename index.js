@@ -28,7 +28,7 @@ app.use("/", express.static(path.join(__dirname, "/client/build")))
 
 app.use(
   cors({
-    origin: ['https://star-shield.netlify.app', 'http://localhost:3000'],
+    origin: '*',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Add additional HTTP methods as required
     allowedHeaders: ['Content-Type', 'Authorization'], // Add additional headers as required
