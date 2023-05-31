@@ -1,5 +1,6 @@
 const passport = require('passport')
 const md5 = require("md5")
+
 const { User } = require('../models')
 const GoogleStragy = require('passport-google-oauth2').Strategy
 

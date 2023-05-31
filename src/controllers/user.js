@@ -63,12 +63,21 @@ exports.register = async (req, res) => {
 }
 
 exports.findAll = async (req, res) => {
+  const page = parseInt(req.query.page) || 1; // Get the page number from the query string
+  const limit = parseInt(req.query.limit) || 5
 
-  const users = await User.find().then(data => {
-    handleResponse(res, data, 200)
-  }).catch(err => {
-    handleError(err, 400, res)
-  })
+  const totalCount = await User.countDocuments(); // Get the total count of documents in the collection
+
+  const totalPages = Math.ceil(totalCount / limit); // Calculate the total number of pages
+
+  const skip = (page - 1) * limit; // 
+
+  const users = await User.find().skip(skip).limit(limit)
+    .then(data => {
+      res.send({ data, currentPage: page, totalPages, totalCount, error: false })
+    }).catch(err => {
+      handleError(err, 400, res)
+    })
 }
 
 exports.findOne = async (req, res) => {

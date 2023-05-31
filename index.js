@@ -1,39 +1,45 @@
 const express = require('express')
 const app = express()
 
-const cookieParser = require("cookie-parser")
-const cors = require("cors")
-
-const cookieSession = require('cookie-session')
-
-const bodyParser = require("body-parser")
 const path = require("path")
-
 const passport = require('passport')
 
+const cors = require("cors")
+const bodyParser = require("body-parser")
 
 require("dotenv").config({ path: __dirname + '/.env' });
 
+
+const cookieParser = require("cookie-parser")
+const cookieSession = require('cookie-session')
+
 const { authJWT } = require('./src/middleware/middleware')
 
-require('./src/controllers/passport')
 
 app.set("view engine", "ejs");
 
-app.use(express.json())
+
+app.use(cors({
+  origin: ['*'],
+  credentials: true,
+}))
+
+
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*'); // Replace with your allowed origin or '*'
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+
+
 app.use(cookieParser())
+app.use(bodyParser.urlencoded({ extended: true }))
 
-app.use("/", express.static(path.join(__dirname, "/client/build")))
+require('./src/controllers/passport')
 
 
-app.use(
-  cors({
-    origin: '*',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Add additional HTTP methods as required
-    allowedHeaders: ['Content-Type', 'Authorization'], // Add additional headers as required
-  })
-)
 
 app.use(cookieSession({
   name: 'google-auth-session',
@@ -43,12 +49,14 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(express.json())
+app.use("/", express.static(path.join(__dirname, "/client/build")))
 
-app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(authJWT)
 
 //******************** Routes ********************//
+require('./src/routes/googleAuth')(app)
 
 require('./src/routes/user')(app)
 require('./src/routes/auth')(app)
@@ -60,14 +68,13 @@ require('./src/routes/comment')(app)
 //**********Quiz routes**********//
 require('./src/routes/reply')(app)
 
-require('./src/routes/googleAuth')(app)
 
 require('./src/routes/group')(app)
 
 
 
 
-app.get('*', function (req, res) {
+app.get('/*', function (req, res) {
   res.status(404).send('Huhhh smart!')
 })
 
