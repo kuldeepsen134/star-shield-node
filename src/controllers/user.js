@@ -1,7 +1,7 @@
 const { User } = require("../models")
 const md5 = require("md5")
 const { handleError, handleResponse, createUUID } = require("../utils/helpers")
-const { registerUser } = require("../utils/common")
+const { registerUser, updaterUserProfile } = require("../utils/common")
 const { sendMailer } = require("../utils/helpers")
 
 
@@ -87,4 +87,38 @@ exports.findOne = async (req, res) => {
     }).catch(err => {
       handleError(err, 400, res)
     })
+}
+
+exports.update = async (req, res) => {
+
+  const { error } = updaterUserProfile.validate(req.body, { abortEarly: false })
+
+  if (error) {
+    return handleError(error, 400, res,)
+  }
+
+  const { first_name, last_name, } = req.body
+
+  let data = ({
+    first_name,
+    last_name,
+  })
+
+  const user = await User.findOne({ _id: req.user.id })
+
+  if (user === null) {
+    handleError('Only for logged in user access!', 400, res)
+  }
+  else
+    if (user) {
+      await User.updateOne({ _id: user._id }, data, {
+        new: true
+      })
+        .then(data => {
+          return res.send({ message: `Profile has been successfully updated.`, error: false })
+        })
+        .catch(err => {
+          handleError(err, 400, res)
+        })
+    }
 }

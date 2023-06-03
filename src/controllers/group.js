@@ -17,7 +17,7 @@ exports.create = async (req, res) => {
       title,
       description,
       member_IDs,
-
+      
       admin_Id: req.user.id
     })
 

@@ -8,6 +8,13 @@ const registerUser = Joi.object().keys({
     role: Joi.string(),
 })
 
+const updaterUserProfile = Joi.object().keys({
+    first_name: Joi.string().required(),
+    last_name: Joi.string().required(),
+})
+
+
+
 const login = Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().min(8).max(32).required(),
@@ -48,7 +55,7 @@ const createGroup = Joi.object().keys({
 
 module.exports = {
     registerUser,
-
+    updaterUserProfile,
     resendEmailLink,
 
     login,
