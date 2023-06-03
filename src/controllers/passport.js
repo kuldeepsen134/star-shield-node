@@ -2,6 +2,7 @@ const passport = require('passport')
 const md5 = require("md5")
 
 const { User } = require('../models')
+
 const GoogleStragy = require('passport-google-oauth2').Strategy
 
 passport.serializeUser((user, done) => {
@@ -16,7 +17,7 @@ passport.use(new GoogleStragy({
     accessType: 'offline',
     clientID: process.env.clientID,
     clientSecret: process.env.clientSecret,
-    callbackURL: "http://localhost:5200/auth/callback",
+    callbackURL: "http://localhost:3000/auth/callback",
     passReqToCallback: true,
     prompt: 'select_account'
 },
@@ -31,13 +32,15 @@ passport.use(new GoogleStragy({
                     done(null, existingUser);
                 }
                 else {
+                   
                     new User({
                         googleId: profile.id,
                         email: profile.email,
                         name: profile.displayName,
                         password: md5(profile.family_name)
                     }).save()
-                        .then(user => done(null, user))
+
+                        // .then(user => done(null, user))
                 }
             })
     }

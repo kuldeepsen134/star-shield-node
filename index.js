@@ -2,7 +2,9 @@ const express = require('express')
 const app = express()
 
 const path = require("path")
+
 const passport = require('passport')
+const helmet = require('helmet');
 
 const cors = require("cors")
 const bodyParser = require("body-parser")
@@ -20,19 +22,15 @@ app.set("view engine", "ejs");
 
 
 app.use(cors({
-  origin: ['*'],
+  origin: ['http://localhost:3000', 'http://localhost:5200',],
   credentials: true,
 }))
 
-
-
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); // Replace with your allowed origin or '*'
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next();
-});
-
+app.use(helmet({
+  referrerPolicy: {
+    policy: 'same-origin'
+  }
+}))
 
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -73,8 +71,7 @@ require('./src/routes/group')(app)
 
 
 
-
-app.get('/*', function (req, res) {
+app.get('*', function (req, res) {
   res.status(404).send('Huhhh smart!')
 })
 
