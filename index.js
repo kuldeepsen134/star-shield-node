@@ -27,7 +27,7 @@ app.use(helmet({
 }))
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5200','https://star-shield-node.vercel.app'],
+  origin: ['http://localhost:3000', 'http://localhost:5200',],
   credentials: true,
 }))
 
