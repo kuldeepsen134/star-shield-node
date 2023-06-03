@@ -20,17 +20,17 @@ const { authJWT } = require('./src/middleware/middleware')
 
 app.set("view engine", "ejs");
 
-
-app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5200',],
-  credentials: true,
-}))
-
 app.use(helmet({
   referrerPolicy: {
     policy: 'same-origin'
   }
 }))
+
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:5200','https://star-shield-node.vercel.app'],
+  credentials: true,
+}))
+
 
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({ extended: true }))
