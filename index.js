@@ -4,7 +4,6 @@ const app = express()
 const path = require("path")
 
 const passport = require('passport')
-const helmet = require('helmet');
 
 const cors = require("cors")
 const bodyParser = require("body-parser")
@@ -20,11 +19,6 @@ const { authJWT } = require('./src/middleware/middleware')
 
 app.set("view engine", "ejs");
 
-app.use(helmet({
-  referrerPolicy: {
-    policy: 'same-origin'
-  }
-}))
 
 app.use(cors({
   origin: ['http://localhost:3000', 'http://localhost:5200',],
