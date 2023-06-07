@@ -1,16 +1,9 @@
-const auths = require('./auth')
-const users = require('./user')
-
-
-const comments = require('./comment')
-const replies = require('./reply')
-const groups = require('./group')
-
 module.exports = {
-    auths,
-    users,
-    groups,
+    auths:require('./auth'),
+    users:require('./user'),
+    posts:require('./post'),
+    groups:require('./group'),
     
-    comments,
-    replies,
+    comments: require('./comment'),
+    replies: require('./reply'),
 }

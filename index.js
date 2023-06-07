@@ -63,6 +63,9 @@ require('./src/routes/reply')(app)
 
 require('./src/routes/group')(app)
 
+require('./src/routes/post')(app)
+
+
 
 
 app.get('*', function (req, res) {

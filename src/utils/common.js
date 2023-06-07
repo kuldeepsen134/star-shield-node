@@ -5,12 +5,15 @@ const registerUser = Joi.object().keys({
     last_name: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(8).max(32).required(),
+    contact: Joi.string(),
     role: Joi.string(),
 })
 
 const updaterUserProfile = Joi.object().keys({
-    first_name: Joi.string().required(),
-    last_name: Joi.string().required(),
+    first_name: Joi.string(),
+    last_name: Joi.string(),
+    password: Joi.string().min(8).max(32),
+    contact: Joi.string(),
 })
 
 

@@ -16,7 +16,11 @@ mongoose.connect(`${process.env.URI}`, {
 const db = {
     User: require('./user'),
     Group: require('./group'),
-    campaign: require('./campaign'),   
+    Post: require('./post'),
+    
+    Media: require('./media'),   
+    
+
     Comment: require('./comment'),
     Reply: require('./reply'),
 }

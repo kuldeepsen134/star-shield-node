@@ -202,7 +202,7 @@ exports.forgotPasswordVerify = async (req, res) => {
 }
 
 exports.me = async (req, res) => {
-    const user = await User.findOne({ _id: req.user.id })
+    const user = await User.findOne({ _id: req.user._id })
     user === null ? handleError('Unauthorized user', 400, res) : handleResponse(res, user._doc, 200)
 
 }

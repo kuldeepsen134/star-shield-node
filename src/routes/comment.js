@@ -9,7 +9,6 @@ module.exports = app => {
 
     router.get('/comments', comments.findAll)
 
-    router.get('/comments/:videoId', comments.getVideoComments)
 
 
     app.use('/api', router);

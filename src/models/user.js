@@ -18,12 +18,16 @@ const userSchema = Schema({
   password: {
     type: String,
   },
+  contact: {
+    type: String,
+  },
   role: {
     type: String,
     enum: ['user', 'admin'],
   },
 
   isEmailVerified: Boolean,
+  
   token: {
     type: String,
 

@@ -2,10 +2,6 @@ const mongoose = require("mongoose")
 const { Schema } = mongoose
 
 const commentSchema = Schema({
-
-    title: {
-        type: String,
-    },
     timeStamp: {
         type: String,
     },
@@ -15,7 +11,7 @@ const commentSchema = Schema({
     timestamps: {
         type: String,
     },
-    video_id: {
+    post_id: {
         type: String,
     },
     user_id: {

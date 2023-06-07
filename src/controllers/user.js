@@ -15,13 +15,14 @@ exports.register = async (req, res) => {
     }
 
 
-    const { first_name, last_name, email, password, role, } = req.body
+    const { first_name, last_name, email, password, contact,role, } = req.body
 
     let data = ({
       first_name,
       last_name,
       email: email.toLowerCase(),
       password: md5(password),
+      contact,
       role,
       isEmailVerified: false,
 
@@ -89,6 +90,7 @@ exports.findOne = async (req, res) => {
     })
 }
 
+
 exports.update = async (req, res) => {
 
   const { error } = updaterUserProfile.validate(req.body, { abortEarly: false })
@@ -104,8 +106,7 @@ exports.update = async (req, res) => {
     last_name,
   })
 
-  const user = await User.findOne({ _id: req.user.id })
-
+  const user = await User.findOne({ _id: req.user._id })
   if (user === null) {
     handleError('Only for logged in user access!', 400, res)
   }
