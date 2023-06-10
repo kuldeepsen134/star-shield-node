@@ -2,15 +2,15 @@ const mongoose = require("mongoose")
 const { Schema } = mongoose
 
 const commentSchema = Schema({
-    timeStamp: {
-        type: String,
-    },
+    // timeStamp: {
+    //     type: String,
+    // },
     message: {
         type: String,
     },
-    timestamps: {
-        type: String,
-    },
+    // timestamps: {
+    //     type: String,
+    // },
     post_id: {
         type: String,
     },

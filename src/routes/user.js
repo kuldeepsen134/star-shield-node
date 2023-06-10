@@ -6,6 +6,8 @@ module.exports = app => {
   router.post('/register', users.register)
   
   router.get('/users', users.findAll)
+  router.get('/users/:id', users.findOne)
+
   
   router.patch('/users/updateProfile', users.update)
 

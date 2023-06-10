@@ -9,21 +9,19 @@ exports.create = async (req, res) => {
     //     return handleError(error, 400, res)
     // }
 
-    const { title, timeStamp, message, post_id } = req.body
+    const { message, post_id } = req.body
 
     let data = ({
-        title,
         message,
-        timeStamp,
         user_id: req.user._id,
-        user_name: req.user.first_name,
+        user_name: req.user.first_name + ' ' + req.user.last_name,
         post_id,
     })
 
     const newComment = new Comment(data)
 
     newComment.save().then(comment => {
-        res.status(201).send({ ...comment._doc, error:false })
+        res.status(201).send({ ...comment._doc, error: false })
     }).catch(err => {
         res.status(400).send({ error: true, message: err.message })
     })

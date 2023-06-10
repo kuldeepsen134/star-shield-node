@@ -2,10 +2,10 @@ const mongoose = require("mongoose")
 const { Schema } = mongoose
 
 const postSchema = Schema({
-  title: {
+  message: {
     type: String,
   },
-  description: {
+  userName: {
     type: String,
   },
   creater_Id: {

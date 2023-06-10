@@ -2,23 +2,18 @@ const { Group } = require("../models")
 const { handleError, handleResponse } = require("../utils/helpers")
 
 exports.create = async (req, res) => {
-  
   try {
 
-    const { error } = createGroup.validate(req.body, { abortEarly: false })
+    // const { error } = createGroup.validate(req.body, { abortEarly: false })
+    // if (error) {
+    //   return handleError(error, 400, res,)
+    // }
 
-    if (error) {
-      return handleError(error, 400, res,)
-    }
-
-    const { title, description, member_IDs, } = req.body
+    const { member_IDs, } = req.body
 
     let data = ({
-      title,
-      description,
       member_IDs,
-      
-      admin_Id: req.user.id
+      admin_Id: req.user._id
     })
 
     const newGroup = new Group(data)
@@ -37,7 +32,7 @@ exports.create = async (req, res) => {
 }
 
 exports.findAll = async (req, res) => {
- await Group.find().then(data => {
+  await Group.find().then(data => {
     handleResponse(res, data, 200)
   }).catch(err => {
     handleError(err, 400, res)

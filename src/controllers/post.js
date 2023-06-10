@@ -3,8 +3,7 @@ const { handleError } = require("../utils/helpers")
 
 exports.create = (req, res) => {
   const files = [];
-
-  const { title, description } = req.body;
+  const { message } = req.body;
 
   req.files.map((item) => {
     files.push({
@@ -17,10 +16,10 @@ exports.create = (req, res) => {
   });
 
   const post = new Post({
-    title,
-    description,
+    message,
     files: files,
     creater_Id: req.user._id,
+    userName: req.user.first_name + ' ' + req.user.last_name,
   });
 
   post
@@ -45,7 +44,7 @@ exports.findAll = async (req, res) => {
 
   const skip = (page - 1) * limit; // 
 
-  await Post.find().skip(skip).limit(limit).then(data => {
+  await Post.find().skip(skip).limit(limit).sort({ createdAt: -1 }).then(data => {
     res.send({ data, currentPage: page, totalPages, totalCount, error: false })
   })
     .catch(err => {
