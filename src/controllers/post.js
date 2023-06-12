@@ -2,15 +2,16 @@ const { Post } = require("../models")
 const { handleError } = require("../utils/helpers")
 
 exports.create = (req, res) => {
-  const files = [];
+  const files = []
   const { message } = req.body;
 
   req.files.map((item) => {
+
     files.push({
       originalName: item.originalname,
       mimetype: item.mimetype,
-      fileName: item.filename, // Changed "filename" to "fileName"
-      filePath: item.path,
+      fileName: item.filename,
+      filePath: `/media/${item.filename}`,
       size: item.size,
     });
   });
@@ -46,6 +47,20 @@ exports.findAll = async (req, res) => {
 
   await Post.find().skip(skip).limit(limit).sort({ createdAt: -1 }).then(data => {
     res.send({ data, currentPage: page, totalPages, totalCount, error: false })
+  })
+    .catch(err => {
+      handleError(err, 400, res)
+    });
+
+}
+
+
+exports.findOne = async (req, res) => {
+
+  const id = req.params.id
+
+  await Post.findOne({ _id: id }).then(data => {
+    res.send({ data, error: false })
   })
     .catch(err => {
       handleError(err, 400, res)

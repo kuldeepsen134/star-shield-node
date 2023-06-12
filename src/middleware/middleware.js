@@ -105,7 +105,7 @@ exports.fileUploader = (req, res, next) => {
       fileFilter: fileFilter,
     });
   
-    upload.array("file")(req, res, next);
+    upload.array("files")(req, res, next);
   };
   
 exports.multipleFileUploading = async (req, res, next) => {

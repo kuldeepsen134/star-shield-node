@@ -5,9 +5,7 @@ const passport = require('passport')
 module.exports = app => {
 
     router.get('/google', (req, res, next) => {
-
         // req.session.google_oauth2_state = Math.random().toString(36).substring(2);
-
         next();
     },
         passport.authenticate('google', {
@@ -17,9 +15,9 @@ module.exports = app => {
         })
     )
 
-    router.get('/auth/callback',
+    router.get('auth/callback',
         passport.authenticate('google', {
-            successRedirect: '/api/dashboard',
+            successRedirect: `${process.env.clientURL}`,
             failureRedirect: '/api/login'
         }))
 
