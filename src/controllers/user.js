@@ -123,3 +123,38 @@ exports.update = async (req, res) => {
         })
     }
 }
+
+exports.updateOne = async (req, res) => {
+
+  // const { error } = updaterUserProfile.validate(req.body, { abortEarly: false })
+
+  // if (error) {
+  //   return handleError(error, 400, res,)
+  // }
+
+  const { first_name, last_name,password, contact } = req.body
+
+  let data = ({
+    first_name,
+    last_name,
+    password,
+    contact
+  })
+
+  const user = await User.findOne({ _id: req.params.id })
+  if (user === null) {
+    handleError('Only for logged in user access!', 400, res)
+  }
+  else
+    if (user) {
+      await User.updateOne({ _id: user._id }, data, {
+        new: true
+      })
+        .then(data => {
+          return res.send({ message: `Profile has been successfully updated.`, error: false })
+        })
+        .catch(err => {
+          handleError(err, 400, res)
+        })
+    }
+}
