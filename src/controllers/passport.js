@@ -9,7 +9,7 @@ passport.use(
             accessType: 'offline',
             clientID: process.env.clientID,
             clientSecret: process.env.clientSecret,
-            callbackURL: "http://localhost:5200/api/auth/callback",
+            callbackURL: "https://star-shield-node.vercel.app/api/auth/callback",
             passReqToCallback: true,
             prompt: 'select_account',
         },
