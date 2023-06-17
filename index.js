@@ -13,8 +13,8 @@ const { authJWT } = require('./src/middleware/middleware');
 
 app.set("view engine", "ejs");
 
-app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:5200', 'https://star-shield.netlify.app'],
+app.use('*',cors({
+  origin: true,
   credentials: true,
 }));
 
