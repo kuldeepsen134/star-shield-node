@@ -20,7 +20,7 @@ module.exports = (app) => {
     router.get(
         '/auth/callback',
         passport.authenticate('google', {
-            successRedirect: `https://star-shield-node.vercel.app/app/dashboard`,
+            successRedirect: `http://localhost:3000/app/dashboard`,
             failureRedirect: '/api/login',
         })
     );
