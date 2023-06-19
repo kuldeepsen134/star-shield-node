@@ -11,9 +11,18 @@ exports.create = async (req, res) => {
 
     const { member_IDs, } = req.body
 
+    const member = await Group.find({ _id: member_IDs, admin_Id: req.user._id })
+
+
+    if (member.lenght > 0) {
+      res.status(400).send({ message: 'User already has been joined', error: true })
+      return
+    }
+
     let data = ({
       member_IDs,
-      admin_Id: req.user._id
+      admin_Id: req.user._id,
+      status: 'followed'
     })
 
     const newGroup = new Group(data)
@@ -22,7 +31,7 @@ exports.create = async (req, res) => {
 
     const datad = { ...newGroup._doc, error: false }
 
-    res.send(datad)
+    res.send({ ...datad, message: 'User has been joined', error: false })
 
   }
 
@@ -37,4 +46,25 @@ exports.findAll = async (req, res) => {
   }).catch(err => {
     handleError(err, 400, res)
   })
+}
+
+
+exports.getFOllower = async (req, res) => {
+  console.log('req>>>>', req.user);
+
+  const page = parseInt(req.query.page) || 1; // Get the page number from the query string
+  const limit = parseInt(req.query.limit) || 5
+
+  const totalCount = await Group.countDocuments(); // Get the total count of documents in the collection
+
+  const totalPages = Math.ceil(totalCount / limit); // Calculate the total number of pages
+
+  const skip = (page - 1) * limit; // 
+
+  await Group.find({ admin_id: req.user._id }).skip(skip).limit(limit)
+    .then(data => {
+      res.send({ data, currentPage: page, totalPages, totalCount, error: false })
+    }).catch(err => {
+      handleError(err, 400, res)
+    })
 }
