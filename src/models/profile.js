@@ -15,9 +15,18 @@ const profileSchema = Schema({
     type: String,
   },
   zip_code: {
+    type: Number,
+  },
+  alternate_contact: {
     type: String,
   },
-  alternative_contact: {
+  yearly_salary: {
+    type: Number,
+  },
+  graduation: {
+    type: String,
+  },
+  user_id: {
     type: String,
   },
   status: {

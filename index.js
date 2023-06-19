@@ -40,12 +40,14 @@ app.use(authJWT);
 //******************** Routes ********************//
 require('./src/routes/googleAuth')(app);
 require('./src/routes/user')(app);
+require('./src/routes/profile')(app);
 require('./src/routes/auth')(app);
 require('./src/routes/media')(app);
 require('./src/routes/comment')(app);
 require('./src/routes/reply')(app);
 require('./src/routes/group')(app);
 require('./src/routes/post')(app);
+
 
 app.get('*', function (req, res) {
   res.status(404).send('Huhhh smart!');

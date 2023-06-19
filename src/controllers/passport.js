@@ -82,7 +82,7 @@ passport.use(
         },
         async function (request, accessToken, refreshToken, profile, done) {
             try {
-                console.log('>>>>profile>>>>',profile);
+                // console.log('>>>>profile>>>>',profile);
                 const existingUser = await User.findOne({ googleId: profile.id });
                 const userWithSameEmail = await User.findOne({ email: profile.email });
 

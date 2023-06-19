@@ -1,6 +1,6 @@
 const { Profile } = require("../models")
 
-exports.register = async (req, res) => {
+exports.create = async (req, res) => {
   try {
     // const { error } = registerUser.validate(req.body, { abortEarly: false })
 
@@ -9,15 +9,18 @@ exports.register = async (req, res) => {
     // }
 
 
-    const { gender, city, zip_code, state, alternative_contact, } = req.body
+    const { gender, city, zip_code, state, alternate_contact, yearly_salary, graduation, } = req.body
 
     let data = ({
       gender,
       city,
-      zip_code,
       state,
-      alternative_contact,
-      status:'completed'
+      zip_code,
+      alternate_contact,
+      yearly_salary,
+      graduation,
+      user_id: req.user._id,
+      status: 'completed'
     })
 
     const newUser = new Profile(data)
@@ -25,8 +28,8 @@ exports.register = async (req, res) => {
     await newUser.save()
 
     const datad = { ...newUser._doc, error: false }
-    res.send(datad)
 
+    res.send({ data: datad, message: 'Your profile has been submitted', error: false })
   }
 
   catch (error) {

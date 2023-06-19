@@ -50,7 +50,6 @@ exports.findAll = async (req, res) => {
 
 
 exports.getFOllower = async (req, res) => {
-  console.log('req>>>>', req.user);
 
   const page = parseInt(req.query.page) || 1; // Get the page number from the query string
   const limit = parseInt(req.query.limit) || 5
