@@ -6,7 +6,6 @@ const registerUser = Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().min(8).max(32).required(),
     contact: Joi.string(),
-    role: Joi.string(),
 })
 
 const updaterUserProfile = Joi.object().keys({

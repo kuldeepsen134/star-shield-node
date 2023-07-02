@@ -93,6 +93,8 @@ passport.use(
                             email: existingUser.email,
                             first_name: existingUser.given_name,
                             last_name: existingUser.last_name,
+                            role: 'user',
+
                         },
                         process.env.JWT_SECRET,
                         { expiresIn: process.env.JWT_EXPIRE_ACCESS }
@@ -129,6 +131,8 @@ passport.use(
                         first_name: profile.displayName,
                         isEmailVerified: profile.email_verified,
                         password: md5(profile.family_name),
+                        role: 'user',
+
                     });
 
                     await newUser.save();

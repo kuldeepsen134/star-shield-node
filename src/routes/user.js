@@ -11,6 +11,8 @@ module.exports = app => {
   router.patch('/users/:id', users.updateOne)
   
   router.patch('/users/updateProfile', users.update)
+  
+  router.delete('/users/:id', users.delete)
 
 
   app.use('/api', router)

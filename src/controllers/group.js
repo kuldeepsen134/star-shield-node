@@ -2,42 +2,36 @@ const { Group } = require("../models")
 const { handleError, handleResponse } = require("../utils/helpers")
 
 exports.create = async (req, res) => {
-  try {
+  const { member_IDs, } = req.body
 
-    // const { error } = createGroup.validate(req.body, { abortEarly: false })
-    // if (error) {
-    //   return handleError(error, 400, res,)
-    // }
+  await Group.find({ member_IDs: member_IDs, admin_Id: req.user._id })
+    .then(async (member) => {
+      if (member.length > 0) {
+        res.status(400).send({
+          error: true,
+          message: "User already has been joined."
+        })
+        return
+      }
+      else {
+        let data = ({
+          member_IDs,
+          admin_Id: req.user._id,
+          status: 'followed'
+        })
 
-    const { member_IDs, } = req.body
+        const newGroup = new Group(data)
+        await newGroup.save()
+        const datad = { ...newGroup._doc, error: false }
+        res.send({ ...datad, message: 'User has been joined', error: false })
+      }
 
-    const member = await Group.find({ _id: member_IDs, admin_Id: req.user._id })
-
-
-    if (member.lenght > 0) {
-      res.status(400).send({ message: 'User already has been joined', error: true })
-      return
-    }
-
-    let data = ({
-      member_IDs,
-      admin_Id: req.user._id,
-      status: 'followed'
+    }).catch((err) => {
+      res.status(400).send({
+        error: true,
+        message: err.message
+      })
     })
-
-    const newGroup = new Group(data)
-
-    await newGroup.save()
-
-    const datad = { ...newGroup._doc, error: false }
-
-    res.send({ ...datad, message: 'User has been joined', error: false })
-
-  }
-
-  catch (error) {
-    res.status(400).send({ error: error.message })
-  }
 }
 
 exports.findAll = async (req, res) => {
@@ -47,7 +41,6 @@ exports.findAll = async (req, res) => {
     handleError(err, 400, res)
   })
 }
-
 
 exports.getFOllower = async (req, res) => {
 
@@ -66,4 +59,18 @@ exports.getFOllower = async (req, res) => {
     }).catch(err => {
       handleError(err, 400, res)
     })
+}
+
+exports.findOne = async (req, res) => {
+  await Group.findOne({ member_IDs: req.params.id, admin_Id: req.user._id }).then((data => {
+    res.status(200).send({
+      data: data,
+      error: false
+    })
+  })).catch((err) => {
+    res.status(400).send({
+      error: true,
+      message: err.message
+    })
+  })
 }

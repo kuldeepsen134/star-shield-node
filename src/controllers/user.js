@@ -15,7 +15,7 @@ exports.register = async (req, res) => {
     }
 
 
-    const { first_name, last_name, email, password, contact,role, } = req.body
+    const { first_name, last_name, email, password, contact, } = req.body
 
     let data = ({
       first_name,
@@ -23,9 +23,8 @@ exports.register = async (req, res) => {
       email: email.toLowerCase(),
       password: md5(password),
       contact,
-      role,
+      role: 'user',
       isEmailVerified: false,
-
       token: createUUID()
     })
 
@@ -132,7 +131,7 @@ exports.updateOne = async (req, res) => {
   //   return handleError(error, 400, res,)
   // }
 
-  const { first_name, last_name,password, contact } = req.body
+  const { first_name, last_name, password, contact } = req.body
 
   let data = ({
     first_name,
@@ -157,4 +156,42 @@ exports.updateOne = async (req, res) => {
           handleError(err, 400, res)
         })
     }
+}
+
+
+exports.delete = async (req, res) => {
+  const { id } = req.params
+
+  const user = await User.findOne({ _id: req.user._id })
+
+  const admin = await User.findOne({ _id: id })
+
+  if (user?.role === 'user') {
+    res.status(400).send({
+      error: true,
+      message: 'Only Admin  can delete user.'
+    })
+    return
+  }
+
+  if (admin?.role === 'admin') {
+    res.status(400).send({
+      error: true,
+      message: 'Admin not delete self.'
+    })
+    return
+  }
+
+  await User.deleteOne({ _id: id }).then(async (data) => {
+    res.status(200).send({
+      error: false,
+      message: 'User has been successfully removed'
+    })
+  }).catch(err => {
+
+    res.status(400).send({
+      error: true,
+      message: err
+    })
+  })
 }

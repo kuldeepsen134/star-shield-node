@@ -84,6 +84,7 @@ exports.login = async (req, res,) => {
     }
 
     const user = await User.findOne({ email: email, password: md5(password) })
+
     if (user === null) {
         res.status(400).send({ message: 'Invalid login credential', error: true })
         return
@@ -99,11 +100,12 @@ exports.login = async (req, res,) => {
                 _id: user._id,
                 email: user.email,
                 first_name: user.first_name,
-                last_name: user.last_name
+                last_name: user.last_name,
+                role: user.role,
             }, process.env.JWT_SECRET, { expiresIn: `${process.env.JWT_EXPIRE_ACCESS}` })
-
             res.cookie('token', token).send({
                 token: token,
+                role: user.role,
                 message: 'LoggedIn Successfully',
                 error: false
             })

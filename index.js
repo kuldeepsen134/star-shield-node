@@ -14,11 +14,15 @@ const { authJWT } = require('./src/middleware/middleware');
 app.set("view engine", "ejs");
 
 app.use(cors({
-  origin: ['http://localhost:3000','http://localhost:5200', ],
+  origin: ['http://localhost:3000', 'http:localhost:5200', 'http://3.106.4.13:3000', 'http://3.106.4.13:5200'],
   credentials: true,
+  methods: ['POST', 'PUT', 'GET', 'DELETE'],
+  preflightContinue: false,
+  optionsSuccessStatus:204
 }));
 
 app.use(cookieParser());
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 require('./src/controllers/passport');
